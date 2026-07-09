@@ -591,6 +591,8 @@ impl<'a> CrateLocator<'a> {
         if slot.is_some() {
             if m.is_empty() || !self.needs_crate_flavor(flavor) {
                 return Ok(None);
+            } else if m.len() == 1 {
+                return Ok(Some(m.into_iter().next().unwrap()));
             }
         }
 
