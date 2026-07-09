@@ -1,6 +1,9 @@
 cfg_select! {
+    target_env = "qumulo" => {
+        pub use crate::qumulo::random::{fill_bytes, hashmap_random_keys};
+    }
     // Tier 1
-    any(target_os = "linux", target_os = "android") => {
+    all(any(target_os = "linux", target_os = "android"), not(target_env = "qumulo")) => {
         mod linux;
         pub use linux::{fill_bytes, hashmap_random_keys};
     }
