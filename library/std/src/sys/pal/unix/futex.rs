@@ -1,4 +1,4 @@
-#![cfg(any(
+#![cfg(all(any(
     target_os = "linux",
     target_os = "android",
     all(target_os = "emscripten", target_feature = "atomics"),
@@ -6,7 +6,7 @@
     target_os = "openbsd",
     target_os = "dragonfly",
     target_os = "fuchsia",
-))]
+), not(target_env = "qumulo")))]
 
 use crate::sync::atomic::Atomic;
 use crate::time::Duration;
