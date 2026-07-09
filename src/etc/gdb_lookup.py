@@ -2,8 +2,8 @@ import gdb
 import gdb.printing
 import re
 
-from gdb_providers import *
-from rust_types import RustType, classify_struct, classify_union
+from .gdb_providers import *
+from .rust_types import RustType, classify_struct, classify_union
 
 
 _gdb_version_matched = re.search("([0-9]+)\\.([0-9]+)", gdb.VERSION)
