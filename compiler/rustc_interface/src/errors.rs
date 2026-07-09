@@ -97,12 +97,6 @@ pub(crate) struct FailedWritingFile<'a> {
 pub(crate) struct ProcMacroCratePanicAbort;
 
 #[derive(Diagnostic)]
-#[diag(
-    "due to multiple output types requested, the explicitly specified output file name will be adapted for each output type"
-)]
-pub(crate) struct MultipleOutputTypesAdaption;
-
-#[derive(Diagnostic)]
 #[diag("ignoring -C extra-filename flag due to -o flag")]
 pub(crate) struct IgnoringExtraFilename;
 
