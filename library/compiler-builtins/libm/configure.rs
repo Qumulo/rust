@@ -27,6 +27,7 @@ pub struct Config {
     pub target_features: Vec<String>,
     pub reliable_f128: bool,
     pub reliable_f16: bool,
+    pub is_qumulo: bool,
 }
 
 impl Config {
@@ -36,7 +37,17 @@ impl Config {
             VERBOSE_BUILD.store(true, Relaxed);
         }
 
-        let target_triple = env::var("TARGET").unwrap();
+        let mut target_triple = env::var("TARGET").unwrap();
+        let mut target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
+
+        // The cc crate cannot reconstruct the LLVM target from the x86_64-qumulo triple, so
+        // configure the C intrinsics build as x86_64-unknown-linux-gnu.
+        let is_qumulo = target_triple.contains("qumulo");
+        if is_qumulo {
+            target_triple = "x86_64-unknown-linux-gnu".to_string();
+            target_env = "gnu".to_string();
+        }
+
         let target_triple_split = target_triple.split('-').map(ToOwned::to_owned).collect();
         let target_families = env::var("CARGO_CFG_TARGET_FAMILY")
             .map(|feats| feats.split(',').map(ToOwned::to_owned).collect())
@@ -63,7 +74,7 @@ impl Config {
             opt_level: env::var("OPT_LEVEL").unwrap(),
             cargo_features,
             target_arch: env::var("CARGO_CFG_TARGET_ARCH").unwrap(),
-            target_env: env::var("CARGO_CFG_TARGET_ENV").unwrap(),
+            target_env,
             target_families,
             target_os: env::var("CARGO_CFG_TARGET_OS").unwrap(),
             target_string: env::var("TARGET").unwrap(),
@@ -73,6 +84,7 @@ impl Config {
             // with `RUSTC_BOOTSTRAP=1` (which is required to use the types anyway).
             reliable_f128: env::var_os("CARGO_CFG_TARGET_HAS_RELIABLE_F128").is_some(),
             reliable_f16: env::var_os("CARGO_CFG_TARGET_HAS_RELIABLE_F16").is_some(),
+            is_qumulo,
         }
     }
 
