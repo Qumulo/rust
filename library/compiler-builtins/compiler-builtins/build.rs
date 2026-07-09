@@ -236,6 +236,11 @@ mod c {
         let mut consider_float_intrinsics = true;
         let cfg = &mut cc::Build::new();
 
+        // The cc crate has a hard time reconstructing the LLVM target from the $TARGET
+        if target.is_qumulo {
+            cfg.target("x86_64-unknown-linux-gnu");
+        }
+
         // AArch64 GCCs exit with an error condition when they encounter any kind of floating point
         // code if the `nofp` and/or `nosimd` compiler flags have been set.
         //
