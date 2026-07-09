@@ -8,7 +8,7 @@
 // should help the fast path on call sites.
 
 cfg_select! {
-    any(
+    all(any(
         all(target_os = "windows", not(target_vendor="win7")),
         target_os = "linux",
         target_os = "android",
@@ -18,7 +18,7 @@ cfg_select! {
         target_os = "dragonfly",
         target_os = "fuchsia",
         target_os = "hermit",
-    ) => {
+    ), not(target_env = "qumulo")) => {
         mod futex;
         pub use futex::{Once, OnceState};
     }
