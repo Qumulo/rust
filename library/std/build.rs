@@ -2,6 +2,7 @@ use std::env;
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
+    let target = env::var("TARGET").expect("TARGET was not set");
     let target_arch = env::var("CARGO_CFG_TARGET_ARCH").expect("CARGO_CFG_TARGET_ARCH was not set");
     let target_os = env::var("CARGO_CFG_TARGET_OS").expect("CARGO_CFG_TARGET_OS was not set");
     let target_vendor =
@@ -15,6 +16,7 @@ fn main() {
 
     println!("cargo:rustc-check-cfg=cfg(restricted_std)");
     if target_os == "linux"
+        || target.contains("qumulo")
         || target_os == "android"
         || target_os == "netbsd"
         || target_os == "dragonfly"

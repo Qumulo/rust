@@ -1441,6 +1441,7 @@ macro_rules! supported_targets {
 supported_targets! {
     ("x86_64-unknown-linux-gnu", x86_64_unknown_linux_gnu),
     ("x86_64-unknown-linux-gnux32", x86_64_unknown_linux_gnux32),
+    ("x86_64-qumulo", x86_64_qumulo),
     ("i686-unknown-linux-gnu", i686_unknown_linux_gnu),
     ("i586-unknown-linux-gnu", i586_unknown_linux_gnu),
     ("loongarch64-unknown-linux-gnu", loongarch64_unknown_linux_gnu),
