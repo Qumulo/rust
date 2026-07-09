@@ -1,5 +1,8 @@
 cfg_select! {
-    any(
+    target_env = "qumulo" => {
+        pub use crate::qumulo::condvar::Condvar;
+    }
+    all(any(
         all(target_os = "windows", not(target_vendor="win7")),
         target_os = "linux",
         target_os = "android",
@@ -10,7 +13,7 @@ cfg_select! {
         target_os = "fuchsia",
         all(target_family = "wasm", target_feature = "atomics"),
         target_os = "hermit",
-    ) => {
+    ), not(target_env = "qumulo")) => {
         mod futex;
         pub use futex::Condvar;
     }
