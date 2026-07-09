@@ -1,5 +1,8 @@
 cfg_select! {
-    any(
+    target_env = "qumulo" => {
+        pub use crate::qumulo::thread_parking::Parker;
+    }
+    all(any(
         all(target_os = "windows", not(target_vendor = "win7")),
         target_os = "linux",
         target_os = "android",
@@ -10,7 +13,7 @@ cfg_select! {
         target_os = "fuchsia",
         target_os = "motor",
         target_os = "hermit",
-    ) => {
+    ), not(target_env = "qumulo")) => {
         mod futex;
         pub use futex::Parker;
     }
