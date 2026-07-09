@@ -44,7 +44,10 @@ cfg_select! {
         mod unsupported;
         pub use unsupported::{Thread, current_os_id, set_name, yield_now, DEFAULT_MIN_STACK_SIZE};
     }
-    target_family = "unix" => {
+    target_env = "qumulo" => {
+        pub use crate::qumulo::thread::{Thread, available_parallelism, current_os_id, sleep, sleep_until, set_name, yield_now, DEFAULT_MIN_STACK_SIZE};
+    }
+    all(target_family = "unix", not(target_env = "qumulo")) => {
         mod unix;
         pub use unix::{Thread, available_parallelism, current_os_id, sleep, yield_now, DEFAULT_MIN_STACK_SIZE};
         #[cfg(not(any(
