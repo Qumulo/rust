@@ -1,6 +1,12 @@
-#![allow(missing_docs, nonstandard_style)]
+#![allow(missing_docs, nonstandard_style, unused_imports, dead_code)]
 
 use crate::io::ErrorKind;
+
+#[cfg(target_env = "qumulo")]
+pub use crate::qumulo::{
+    thread,
+    thread_parking,
+};
 
 #[cfg(not(target_os = "espidf"))]
 #[macro_use]
@@ -17,6 +23,7 @@ pub mod os;
 pub mod pipe;
 pub mod stack_overflow;
 pub mod sync;
+#[cfg(not(target_env = "qumulo"))]
 pub mod thread_parking;
 pub mod time;
 
