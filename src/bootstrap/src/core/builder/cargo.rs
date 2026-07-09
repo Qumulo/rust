@@ -844,7 +844,7 @@ impl Builder<'_> {
             // never mix these libraries by accident.
             "bootstrap".to_string()
         } else {
-            self.config.channel.to_string()
+            format!("{}{}", &self.config.channel, &target)
         };
         // We want to make sure that none of the dependencies between
         // std/test/rustc unify with one another. This is done for weird linkage
