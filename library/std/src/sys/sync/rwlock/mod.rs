@@ -1,5 +1,9 @@
 cfg_select! {
-    any(
+    target_env = "qumulo" => {
+        mod queue;
+        pub use queue::RwLock;
+    }
+    all(any(
         all(target_os = "windows", not(target_vendor = "win7")),
         target_os = "linux",
         target_os = "android",
@@ -9,8 +13,8 @@ cfg_select! {
         target_os = "fuchsia",
         all(target_family = "wasm", target_feature = "atomics"),
         target_os = "hermit",
-       target_os = "motor",
-    ) => {
+        target_os = "motor",
+    ), not(target_env = "qumulo")) => {
         mod futex;
         pub use futex::RwLock;
     }
