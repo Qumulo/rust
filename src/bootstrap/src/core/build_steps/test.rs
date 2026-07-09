@@ -2949,6 +2949,7 @@ fn prepare_cargo_test(
     // Pass in some standard flags then iterate over the graph we've discovered
     // in `cargo metadata` with the maps above and figure out what `-p`
     // arguments need to get passed.
+    cargo.arg("--no-run");
     if builder.kind == Kind::Test && !builder.fail_fast {
         cargo.arg("--no-fail-fast");
     }
