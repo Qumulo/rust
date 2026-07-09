@@ -765,3 +765,6 @@ mod sealed {
 #[cfg(test)]
 #[allow(dead_code)] // Not used in all configurations.
 pub(crate) mod test_helpers;
+
+#[cfg(target_env = "qumulo")]
+pub mod qumulo;
