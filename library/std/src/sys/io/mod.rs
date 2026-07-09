@@ -4,7 +4,10 @@ mod error;
 
 mod io_slice {
     cfg_select! {
-        any(target_family = "unix", target_os = "hermit", target_os = "solid_asp3", target_os = "trusty", target_os = "wasi") => {
+        target_env = "qumulo" => {
+            pub use crate::qumulo::io_slice::{IoSlice, IoSliceMut};
+        }
+        all(any(target_family = "unix", target_os = "hermit", target_os = "solid_asp3", target_os = "trusty", target_os = "wasi"), not(target_env = "qumulo")) => {
             mod iovec;
             pub use iovec::*;
         }
