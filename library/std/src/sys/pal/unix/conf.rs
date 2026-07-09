@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-#[cfg(not(target_os = "espidf"))]
+#[cfg(all(not(target_env = "qumulo"), not(target_os = "espidf")))]
 pub fn page_size() -> usize {
     unsafe { libc::sysconf(libc::_SC_PAGESIZE) as usize }
 }
