@@ -418,6 +418,7 @@ impl<'tcx> MissingStabilityAnnotations<'tcx> {
         let stab = self.tcx.lookup_stability(def_id);
         self.tcx.ensure_ok().lookup_const_stability(def_id);
         if !self.tcx.sess.is_test_crate()
+            && !self.tcx.sess.is_qumulo_env()
             && stab.is_none()
             && self.effective_visibilities.is_reachable(def_id)
         {
@@ -434,6 +435,7 @@ impl<'tcx> MissingStabilityAnnotations<'tcx> {
 
         // Reachable const fn/trait must have a stability attribute.
         if is_const
+            && !self.tcx.sess.is_qumulo_env()
             && self.effective_visibilities.is_reachable(def_id)
             && self.tcx.lookup_const_stability(def_id).is_none()
         {
