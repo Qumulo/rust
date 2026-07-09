@@ -1467,7 +1467,13 @@ impl<'a> IoSliceMut<'a> {
     /// ```
     #[unstable(feature = "io_slice_as_bytes", issue = "132818")]
     pub const fn into_slice(self) -> &'a mut [u8] {
-        self.0.into_slice()
+        cfg_if::cfg_if! {
+            if #[cfg(target_env = "qumulo")] {
+                panic!("Not supported in the qumulo env")
+            } else {
+                self.0.into_slice()
+            }
+        }
     }
 }
 
@@ -1635,7 +1641,13 @@ impl<'a> IoSlice<'a> {
     /// ```
     #[unstable(feature = "io_slice_as_bytes", issue = "132818")]
     pub const fn as_slice(self) -> &'a [u8] {
-        self.0.as_slice()
+        cfg_if::cfg_if! {
+            if #[cfg(target_env = "qumulo")] {
+                panic!("Not supported in the qumulo env")
+            } else {
+                self.0.as_slice()
+            }
+        }
     }
 }
 
