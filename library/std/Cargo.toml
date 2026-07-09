@@ -167,6 +167,8 @@ test = true
 [lints.rust.unexpected_cfgs]
 level = "warn"
 check-cfg = [
+    # Disable the unexpected-cfgs lint when the target_env is qumulo.
+    'cfg(target_env, values("qumulo"))',
     # std use #[path] imports to portable-simd `std_float` crate
     # and to the `backtrace` crate which messes-up with Cargo list
     # of declared features, we therefor expect any feature cfg
