@@ -3,7 +3,10 @@
 #![forbid(unsafe_op_in_unsafe_fn)]
 
 cfg_select! {
-    target_family = "unix" => {
+    target_env = "qumulo" => {
+        pub use crate::qumulo::fd::*;
+    }
+    all(target_family = "unix", not(target_env = "qumulo")) => {
         mod unix;
         pub use unix::*;
     }
