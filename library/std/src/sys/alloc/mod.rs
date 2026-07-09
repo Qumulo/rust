@@ -69,12 +69,16 @@ unsafe fn realloc_fallback(
 }
 
 cfg_select! {
-    any(
+    target_env = "qumulo" => {
+        #[allow(dead_code, unused_imports)]
+        use crate::qumulo::alloc;
+    }
+    all(any(
         target_family = "unix",
         target_os = "wasi",
         target_os = "teeos",
         target_os = "trusty",
-    ) => {
+    ), not(target_env = "qumulo")) => {
         mod unix;
     }
     target_os = "windows" => {
