@@ -87,7 +87,7 @@ impl Instant {
     }
 
     #[cfg_attr(
-        not(target_os = "linux"),
+        any(not(target_os = "linux"), target_env = "qumulo"),
         allow(unused, reason = "needed by the `sleep_until` on some unix platforms")
     )]
     pub(crate) fn into_timespec(self) -> Timespec {

@@ -2,6 +2,7 @@
 //!
 //! [`std::thread`]: crate::thread
 
+#![allow(unused_imports)]
 #![stable(feature = "thread_extensions", since = "1.9.0")]
 
 #[allow(deprecated)]
@@ -30,6 +31,7 @@ pub trait JoinHandleExt {
 }
 
 #[stable(feature = "thread_extensions", since = "1.9.0")]
+#[cfg(not(target_env = "qumulo"))]
 impl<T> JoinHandleExt for JoinHandle<T> {
     fn as_pthread_t(&self) -> RawPthread {
         self.as_inner().id() as RawPthread
