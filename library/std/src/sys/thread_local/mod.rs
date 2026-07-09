@@ -57,7 +57,12 @@ cfg_select! {
 #[cfg(all(target_thread_local, not(all(target_family = "wasm", not(target_feature = "atomics")))))]
 pub(crate) mod destructors {
     cfg_select! {
-        any(
+        target_env = "qumulo" => {
+            mod list;
+            pub(crate) use list::register;
+            pub(crate) use list::run;
+        }
+        all(any(
             target_os = "linux",
             target_os = "android",
             target_os = "fuchsia",
@@ -65,7 +70,7 @@ pub(crate) mod destructors {
             target_os = "hurd",
             target_os = "netbsd",
             target_os = "dragonfly"
-        ) => {
+        ), not(target_env = "qumulo")) => {
             mod linux_like;
             mod list;
             pub(super) use linux_like::register;
@@ -84,6 +89,9 @@ pub(crate) mod destructors {
 /// should ensure that these functions are called at the right times.
 pub(crate) mod guard {
     cfg_select! {
+        target_env = "qumulo" => {
+            pub(crate) use crate::qumulo::thread_local_guard::enable;
+        }
         all(target_thread_local, target_vendor = "apple") => {
             mod apple;
             pub(crate) use apple::enable;
@@ -142,8 +150,15 @@ pub(crate) mod guard {
 /// with a pointer which we can get and set to store our data.
 pub(crate) mod key {
     cfg_select! {
+        target_env = "qumulo" => {
+            mod racy;
+            pub(crate) use racy::LazyKey;
+            #[allow(unused)]
+            pub use crate::qumulo::thread_local_key::{Key, create, destroy, get, set};
+        }
         any(
             all(
+                not(target_env = "qumulo"),
                 not(target_vendor = "apple"),
                 not(target_family = "wasm"),
                 target_family = "unix",
