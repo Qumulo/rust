@@ -395,6 +395,10 @@ impl Session {
             )
     }
 
+    pub fn is_qumulo_env(&self) -> bool {
+        self.target.options.env == "qumulo"
+    }
+
     /// Returns `true` if the target can use the current split debuginfo configuration.
     pub fn target_can_use_split_dwarf(&self) -> bool {
         self.target.debuginfo_kind == DebuginfoKind::Dwarf
