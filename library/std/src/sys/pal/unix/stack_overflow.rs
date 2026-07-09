@@ -28,7 +28,7 @@ impl Drop for Handler {
 #[cfg(all(
     not(miri),
     any(
-        target_os = "linux",
+        all(target_os = "linux", not(target_env = "qumulo")),
         target_os = "freebsd",
         target_os = "hurd",
         target_os = "macos",
@@ -46,7 +46,7 @@ mod thread_info;
 #[cfg(all(
     not(miri),
     any(
-        target_os = "linux",
+        all(target_os = "linux", not(target_env = "qumulo")),
         target_os = "freebsd",
         target_os = "hurd",
         target_os = "macos",
@@ -624,7 +624,7 @@ mod imp {
 #[cfg(any(
     miri,
     not(any(
-        target_os = "linux",
+        all(target_os = "linux", not(target_env = "qumulo")),
         target_os = "freebsd",
         target_os = "hurd",
         target_os = "macos",
