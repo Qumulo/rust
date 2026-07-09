@@ -1,7 +1,10 @@
 #![forbid(unsafe_op_in_unsafe_fn)]
 
 cfg_select! {
-    any(target_family = "unix", target_os = "hermit", target_os = "wasi") => {
+    target_env = "qumulo" => {
+        pub use crate::qumulo::stdio::*;
+    }
+    all(any(target_family = "unix", target_os = "hermit", target_os = "wasi"), not(target_env = "qumulo")) => {
         mod unix;
         pub use unix::*;
     }
