@@ -29,7 +29,7 @@ use rustc_span::source_map::{FilePathMapping, SourceMap};
 use rustc_span::{RealFileName, Span, Symbol};
 use rustc_target::asm::InlineAsmArch;
 use rustc_target::spec::{
-    Arch, CodeModel, DebuginfoKind, Os, PanicStrategy, RelocModel, RelroLevel, SanitizerSet,
+    Arch, CodeModel, DebuginfoKind, Env, Os, PanicStrategy, RelocModel, RelroLevel, SanitizerSet,
     SmallDataThresholdSupport, SplitDebuginfo, StackProtector, SymbolVisibility, Target,
     TargetTuple, TlsModel, apple,
 };
@@ -406,6 +406,10 @@ impl Session {
                 self.opts.unstable_opts.wasi_exec_model,
                 Some(config::WasiExecModel::Reactor)
             )
+    }
+
+    pub fn is_qumulo_env(&self) -> bool {
+        self.target.options.env == Env::Qumulo
     }
 
     /// Returns `true` if the target can use the current split debuginfo configuration.
