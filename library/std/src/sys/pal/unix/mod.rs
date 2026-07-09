@@ -1,8 +1,15 @@
-#![allow(missing_docs, nonstandard_style)]
+#![allow(missing_docs, nonstandard_style, unused_imports, dead_code)]
 
 use crate::io;
 
 pub mod conf;
+
+#[cfg(target_env = "qumulo")]
+pub use crate::qumulo::{
+    thread,
+    thread_parking,
+};
+
 #[cfg(target_os = "fuchsia")]
 pub mod fuchsia;
 pub mod futex;
@@ -10,6 +17,7 @@ pub mod futex;
 pub mod linux;
 pub mod stack_overflow;
 pub mod sync;
+#[cfg(not(target_env = "qumulo"))]
 pub mod thread_parking;
 pub mod time;
 pub mod weak;
