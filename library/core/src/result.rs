@@ -543,7 +543,7 @@
 use crate::iter::{self, FusedIterator, TrustedLen};
 use crate::marker::Destruct;
 use crate::ops::{self, ControlFlow, Deref, DerefMut};
-use crate::{convert, fmt, hint};
+use crate::{convert, fmt, hint, panic};
 
 /// `Result` is a type that represents either success ([`Ok`]) or failure ([`Err`]).
 ///
@@ -2184,7 +2184,7 @@ impl<T, E, F: [const] From<E>> const ops::FromResidual<Result<convert::Infallibl
 {
     #[inline]
     #[track_caller]
-    fn from_residual(residual: Result<convert::Infallible, E>) -> Self {
+    default fn from_residual(residual: Result<convert::Infallible, E>) -> Self {
         match residual {
             Err(e) => Err(From::from(e)),
         }
@@ -2198,6 +2198,38 @@ impl<T, E, F: [const] From<E>> const ops::FromResidual<ops::Yeet<E>> for Result<
     fn from_residual(ops::Yeet(e): ops::Yeet<E>) -> Self {
         Err(From::from(e))
     }
+}
+
+/// Specialized implementation of [`FromResidual`] for [`Traced`] types.
+#[unstable(feature = "try_trait_v2", issue = "84277", old_name = "try_trait")]
+#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+impl<T, E, F: [const] From<E> + [const] Traced> const ops::FromResidual<Result<convert::Infallible, E>>
+    for Result<T, F>
+{
+    #[inline]
+    #[track_caller]
+    fn from_residual(residual: Result<convert::Infallible, E>) -> Self {
+        match residual {
+            Err(e) => {
+                let mut traced = F::from(e);
+                traced.trace(panic::Location::caller());
+                Err(traced)
+            }
+        }
+    }
+}
+
+/// A trait that enables return tracing for [`Err`] variants of [`Result`].
+///
+/// Every time the `?` operator is invoked on an [`Err`] variant of a
+/// `Result<T, E: Traced>`, the [`trace()`][Traced::trace] method will be
+/// invoked on the error with the code location of the `?` invocation.
+#[rustc_specialization_trait]
+#[unstable(feature = "try_trait_v2", issue = "84277", old_name = "try_trait")]
+#[rustc_const_unstable(feature = "const_try", issue = "74935")]
+pub const trait Traced {
+    /// Called during `?` with the code location of the `?` invocation.
+    fn trace(&mut self, location: &'static panic::Location<'static>);
 }
 
 #[unstable(feature = "try_trait_v2_residual", issue = "91285")]
