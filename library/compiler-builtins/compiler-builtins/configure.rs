@@ -18,11 +18,21 @@ pub struct Target {
     pub features: Vec<String>,
     pub reliable_f128: bool,
     pub reliable_f16: bool,
+    pub is_qumulo: bool,
 }
 
 impl Target {
     pub fn from_env() -> Self {
-        let triple = env::var("TARGET").unwrap();
+        let mut is_qumulo = false;
+        let mut triple = env::var("TARGET").unwrap();
+        let mut target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap();
+
+        if triple.contains("qumulo") {
+            is_qumulo = true;
+            triple = "x86_64-unknown-linux-gnu".to_string();
+            target_env = "gnu".to_string();
+        }
+
         let triple_split = triple.split('-').map(ToOwned::to_owned).collect();
         let little_endian = match env::var("CARGO_CFG_TARGET_ENDIAN").unwrap().as_str() {
             "little" => true,
@@ -42,7 +52,7 @@ impl Target {
             cargo_features,
             arch: env::var("CARGO_CFG_TARGET_ARCH").unwrap(),
             vendor: env::var("CARGO_CFG_TARGET_VENDOR").unwrap(),
-            env: env::var("CARGO_CFG_TARGET_ENV").unwrap(),
+            env: target_env,
             pointer_width: env::var("CARGO_CFG_TARGET_POINTER_WIDTH")
                 .unwrap()
                 .parse()
@@ -57,6 +67,7 @@ impl Target {
             // with `RUSTC_BOOTSTRAP=1` (which is required to use the types anyway).
             reliable_f128: env::var_os("CARGO_CFG_TARGET_HAS_RELIABLE_F128").is_some(),
             reliable_f16: env::var_os("CARGO_CFG_TARGET_HAS_RELIABLE_F16").is_some(),
+            is_qumulo,
         }
     }
 
